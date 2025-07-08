@@ -1,3 +1,10 @@
+
+--Challenge 1 : Création d’une Base de Données
+CREATE DATABASE store_db;
+USE store_db ;
+--Challenge 2 : Création de Tables
+
+--Créez une base de données nommée store_db.
 -- Table: customers
 CREATE TABLE customers (
   customer_id SERIAL PRIMARY KEY,
@@ -32,10 +39,14 @@ CREATE TABLE order_items (
   product_id INT NOT NULL,
   quantity INT NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
-  FOREIGN KEY (order_id) REFERENCES orders(order_id),
+  CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(order_id),
   --ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(product_id)
+  CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
+
+--Challenge 3 : Insertion de Données 
+
 
 -- Sample customers
 INSERT INTO customers (first_name, last_name, email, phone_number) VALUES
@@ -71,103 +82,45 @@ INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
   (5, 4, 1, 79.99);   -- Karim ordered 1 Coffee Maker
 
 
+--Challenge 4 : Requêtes de Sélection Simples
 
-
-
-
--- Challenge 4 : Requêtes de Sélection Simples
-
-
-
-
--- Sélectionnez tous les clients.
+--Sélectionnez tous les clients.
 select * from customers ;
-
-
--- Sélectionnez les commandes passées après le 1er janvier 2024.
+--Sélectionnez les commandes passées après le 1er janvier 2024.
 select * from orders where order_date > '2024-01-01';
-
-
---Sélectionnez le nom et l’e-mail des clients ayant passé une commande
+--Sélectionnez le nom et l’e-mail des clients ayant passé une commande.
 SELECT 'orders:' as table_name;
 SELECT c.first_name, c.last_name, c.email
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id;
 
 
--- Sélectionnez les customers ayant le nom john
+--Challenge 5 : Clauses WHERE
+
+--Sélectionnez les clients dont le prénom est "John".
  select *
  from customers 
  where first_name = 'john';
-
- -- Sélectionnez les produits dont le prix est supérieur à 100.
-select * from orders where total_amount> 100;
-
-
- --- Sélectionnez les customers ayant le nom commence par 'D'
- select * from customers where first_name like 'D%'
-
-
-
--- Challenge 5 : Mise à Jour de Données
-
-
---Mettez à jour le numéro de téléphone d’un client.
-update customers 
-set  phone_number= '0615131417'
-where customer_id = 2;
-
-
---Augmentez le total_amount de toutes les commandes de 10%.
-update orders 
-set total_amount *= 1,1;
-
-
---Corrigez une adresse e-mail incorrecte.
- update customers 
- set email= 'david.dubois@gmail.com'
- where customer_id = 3;
- 
-
--- select by name
- select *
- from customers 
- where first_name = 'john';
-
-
 --Sélectionnez les commandes dont le montant est supérieur à 100 €.
-
 select * from orders where total_amount> 100;
+--Sélectionnez les clients dont le nom commence par "D".
+select * from customers where first_name like 'D%';
 
- --- Sélectionnez les customers ayant le nom commence par 'D'
- select * from customers where first_name like 'D%'
-
-
-
--- Challenge 6 : Mise à Jour de Données
-
+--Challenge 6 : Mise à Jour de Données
 --Mettez à jour le numéro de téléphone d’un client.
 update customers 
 set  phone_number= '0615131417'
 where customer_id = 2;
-
-select * from customers where customer_id = 2;
-
 --Augmentez le total_amount de toutes les commandes de 10%.
 update orders
 set total_amount = total_amount * 1.1;
-
-select * from orders ;
-
 --Corrigez une adresse e-mail incorrecte.
- update customers 
- set email= 'david.dubois@gmail.com'
- where customer_id = 3;
+update customers
+set email = 'john.newemail@gmail.com'
+where customer_id = 1;
 
- select * from customers where customer_id= 3; 
- 
 --Challenge 7 : Suppression de Données
---Supprimez les commandes antérieures à 2023.
+--1-Supprimez les commandes antérieures à 2023.
 select * from orders;
 DELETE FROM order_items
 WHERE order_id IN (
@@ -178,9 +131,7 @@ WHERE order_id IN (
 
 DELETE FROM orders
 WHERE order_date < '2023-01-01';
-
-
---supprimez un client et toutes ses commandes associées (ON DELETE CASCADE).
+--2-Supprimez un client et toutes ses commandes associées (ON DELETE CASCADE).
 
 ALTER TABLE order_items
 DROP CONSTRAINT order_items_order_id_fkey;
@@ -200,12 +151,5 @@ ON DELETE CASCADE;
 DELETE FROM customers WHERE customer_id = 4;
 
 
--- Supprimez toutes les commandes d’un client spécifique.
-DELETE FROM order_items
-where order_id IN (
-  SELECT order_id
-  FROM orders
-  WHERE customer_id=1
-);
-DELETE FROM orders WHERE customer_id=1  ;
-
+--3-Supprimez toutes les commandes d’un client spécifique.
+DELETE FROM orders WHERE customer_id = 1;
