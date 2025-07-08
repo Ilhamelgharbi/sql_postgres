@@ -66,16 +66,55 @@ WHERE (
 ) > 200;
 
 --2 Client avec le plus gros montant cumulé de commandes.
+SELECT c.*, SUM(o.total_amount)
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id
+ORDER BY total_spent DESC;
 
 --3 Commandes > à la moyenne des montants de commande.
+SELECT *
+FROM orders
+WHERE total_amount > (
+  SELECT AVG(total_amount)
+  FROM orders
+);
 
 
 --Challenge 5 : Création de Vues
 
 --1 Créez une vue customer_orders_view (client + commandes).
+CREATE OR REPLACE VIEW customer_orders_view AS
+SELECT 
+  c.customer_id,
+  c.first_name,
+  c.last_name,
+  c.email,
+  o.order_id,
+  o.order_date,
+  o.total_amount
+FROM customers c
+JOIN orders o ON o.customer_id = c.customer_id;
+
 
 --2 Utilisez cette vue pour afficher les clients avec > 1000 € en commandes.
+SELECT 
+  customer_id,
+  first_name,
+  last_name,
+  SUM(total_amount) AS total_spent
+FROM customer_orders_view
+GROUP BY customer_id
+HAVING SUM(total_amount) > 1000;
 
 --3 Créez une vue monthly_sales_view (ventes totales par mois).
+CREATE OR REPLACE VIEW monthly_sales_view AS
+SELECT 
+  TO_CHAR(order_date, 'YYYY-MM') AS month,
+  COUNT(*) AS total_orders,
+  SUM(total_amount) AS total_sales
+FROM orders
+GROUP BY TO_CHAR(order_date, 'YYYY-MM')
+ORDER BY month;
 
 
