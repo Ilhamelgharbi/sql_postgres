@@ -56,7 +56,14 @@ HAVING SUM(o.total_amount) > 1000;
 
 --Challenge 4 : Sous-Requêtes
 
---1 Clients ayant passé au moins une commande > 200 €.
+--1 Clients ayant passé au moins une commande > 200 €
+SELECT *
+FROM customers c
+WHERE (
+  SELECT SUM(o.total_amount)
+  FROM orders o
+  WHERE o.customer_id = c.customer_id
+) > 200;
 
 --2 Client avec le plus gros montant cumulé de commandes.
 
