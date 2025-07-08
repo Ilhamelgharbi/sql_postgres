@@ -66,10 +66,10 @@ WHERE (
 ) > 200;
 
 --2 Client avec le plus gros montant cumulé de commandes.
-SELECT c.*, SUM(o.total_amount)
+SELECT c.*, SUM(o.total_amount) AS total_spent
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name, c.email, c.phone_number
 ORDER BY total_spent DESC;
 
 --3 Commandes > à la moyenne des montants de commande.
