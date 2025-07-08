@@ -104,7 +104,7 @@ SELECT
   last_name,
   SUM(total_amount) AS total_spent
 FROM customer_orders_view
-GROUP BY customer_id
+GROUP BY customer_id, first_name, last_name
 HAVING SUM(total_amount) > 1000;
 
 --3 Créez une vue monthly_sales_view (ventes totales par mois).
