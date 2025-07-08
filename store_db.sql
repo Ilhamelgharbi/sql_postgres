@@ -78,7 +78,7 @@ INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
 
 -- Challenge 4 : Sélections
 -- 1. Sélectionner tous les clients
-SELECT * FROM customers;\
+SELECT * FROM customers;
 -- 2. Sélectionner tous les produits
 SELECT * FROM orders WHERE order_date > '2024-01-01';
 -- 3. Sélectionner les commandes d’un client spécifique
