@@ -1,3 +1,41 @@
+-- Création des tables pour la gestion de la bibliothèque
+
+-- Table : Utilisateurs
+CREATE TABLE Utilisateurs (
+  id_utilisateur SERIAL PRIMARY KEY,
+  nom VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  role VARCHAR(20) CHECK (role IN ('lecteur', 'bibliothecaire', 'admin'))
+);
+
+-- Table : Livre
+CREATE TABLE Livre (
+  id_livre SERIAL PRIMARY KEY,
+  titre VARCHAR(200) NOT NULL,
+  auteur VARCHAR(100) NOT NULL,
+  categorie VARCHAR(50) NOT NULL,
+  disponible BOOLEAN DEFAULT TRUE
+);
+
+-- Table : Emprunts
+CREATE TABLE Emprunts (
+  id_emprunts SERIAL PRIMARY KEY,
+  id_utilisateur INT REFERENCES Utilisateurs(id_utilisateur),
+  id_livre INT REFERENCES Livre(id_livre),
+  date_emprunt DATE NOT NULL,
+  date_retour_prevue DATE NOT NULL,
+  date_retour_reelle DATE
+);
+
+-- Table : Commentaires
+CREATE TABLE Commentaires (
+  id_commentaire SERIAL PRIMARY KEY,
+  id_utilisateur INT REFERENCES Utilisateurs(id_utilisateur),
+  id_livre INT REFERENCES Livre(id_livre),
+  texte TEXT NOT NULL,
+  note INT CHECK (note BETWEEN 1 AND 5)
+);
+
 -- Partie 1 : Requêtes SQL basiques
 
 -- 1. Lister tous les livres disponibles
